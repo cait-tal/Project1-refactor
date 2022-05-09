@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Reimbursement.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project-1-employee-reimbursement</a> &gt; <a href="index.source.html" class="el_package">com.revature.model</a> &gt; <span class="el_source">Reimbursement.java</span></div><h1>Reimbursement.java</h1><pre class="source lang-java linenums">package com.revature.model;
+
+
+
+import java.util.Objects;
+
+public class Reimbursement {
+    private int id;
+    private double amount;
+    private String submitTimestamp;
+    private String resolveTimestamp;
+    private String description;
+    private String receiptUrl;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private int resolverId;
+    private String type;
+    private String status;
+
+<span class="fc" id="L21">    public Reimbursement() {</span>
+
+<span class="fc" id="L23">    }</span>
+
+    public Reimbursement(int id, double amount, String submitTimestamp, String resolveTimestamp, String description, String receiptUrl, String firstName,
+<span class="fc" id="L26">                         String lastName, String email, int resolverId, String type, String status) {</span>
+<span class="fc" id="L27">        this.id = id;</span>
+<span class="fc" id="L28">        this.amount = amount;</span>
+<span class="fc" id="L29">        this.submitTimestamp = submitTimestamp;</span>
+<span class="fc" id="L30">        this.resolveTimestamp = resolveTimestamp;</span>
+<span class="fc" id="L31">        this.description = description;</span>
+<span class="fc" id="L32">        this.receiptUrl = receiptUrl;</span>
+<span class="fc" id="L33">        this.firstName = firstName;</span>
+<span class="fc" id="L34">        this.lastName = lastName;</span>
+<span class="fc" id="L35">        this.email = email;</span>
+<span class="fc" id="L36">        this.resolverId = resolverId;</span>
+<span class="fc" id="L37">        this.type = type;</span>
+<span class="fc" id="L38">        this.status = status;</span>
+<span class="fc" id="L39">    }</span>
+
+    public int getId() {
+<span class="nc" id="L42">        return id;</span>
+    }
+
+    public void setId(int id) {
+<span class="nc" id="L46">        this.id = id;</span>
+<span class="nc" id="L47">    }</span>
+
+    public double getAmount() {
+<span class="nc" id="L50">        return amount;</span>
+    }
+
+    public void setAmount(double amount) {
+<span class="nc" id="L54">        this.amount = amount;</span>
+<span class="nc" id="L55">    }</span>
+
+    public String getSubmitTimestamp() {
+<span class="nc" id="L58">        return submitTimestamp;</span>
+    }
+
+    public void setSubmitTimestamp(String submitTimestamp) {
+<span class="nc" id="L62">        this.submitTimestamp = submitTimestamp;</span>
+<span class="nc" id="L63">    }</span>
+
+    public String getResolveTimestamp() {
+<span class="nc" id="L66">        return resolveTimestamp;</span>
+    }
+
+    public void setResolveTimestamp(String resolveTimestamp) {
+<span class="nc" id="L70">        this.resolveTimestamp = resolveTimestamp;</span>
+<span class="nc" id="L71">    }</span>
+
+    public String getDescription() {
+<span class="nc" id="L74">        return description;</span>
+    }
+
+    public void setDescription(String description) {
+<span class="nc" id="L78">        this.description = description;</span>
+<span class="nc" id="L79">    }</span>
+
+    public String getReceiptUrl() {
+<span class="fc" id="L82">        return receiptUrl;</span>
+    }
+
+    public void setReceiptUrl(String receiptUrl) {
+<span class="fc" id="L86">        this.receiptUrl = receiptUrl;</span>
+<span class="fc" id="L87">    }</span>
+
+    public String getFirstName() {
+<span class="nc" id="L90">        return firstName;</span>
+    }
+
+    public void setFirstName(String firstName) {
+<span class="nc" id="L94">        this.firstName = firstName;</span>
+<span class="nc" id="L95">    }</span>
+
+    public String getLastName() {
+<span class="nc" id="L98">        return lastName;</span>
+    }
+
+    public void setLastName(String lastName) {
+<span class="nc" id="L102">        this.lastName = lastName;</span>
+<span class="nc" id="L103">    }</span>
+
+    public String getEmail() {
+<span class="nc" id="L106">        return email;</span>
+    }
+
+    public void setEmail(String email) {
+<span class="nc" id="L110">        this.email = email;</span>
+<span class="nc" id="L111">    }</span>
+
+    public int getResolverId() {
+<span class="nc" id="L114">        return resolverId;</span>
+    }
+
+    public void setResolverId(int resolverId) {
+<span class="nc" id="L118">        this.resolverId = resolverId;</span>
+<span class="nc" id="L119">    }</span>
+
+    public String getType() {
+<span class="nc" id="L122">        return type;</span>
+    }
+
+    public void setType(String type) {
+<span class="nc" id="L126">        this.type = type;</span>
+<span class="nc" id="L127">    }</span>
+
+    public String getStatus() {
+<span class="fc" id="L130">        return status;</span>
+    }
+
+    public void setStatus(String status) {
+<span class="fc" id="L134">        this.status = status;</span>
+<span class="fc" id="L135">    }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="fc bfc" id="L139" title="All 2 branches covered.">        if (this == o) return true;</span>
+<span class="pc bpc" id="L140" title="2 of 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="fc" id="L141">        Reimbursement that = (Reimbursement) o;</span>
+<span class="pc bpc" id="L142" title="12 of 24 branches missed.">        return id == that.id &amp;&amp; Double.compare(that.amount, amount) == 0 &amp;&amp; resolverId == that.resolverId &amp;&amp; Objects.equals(submitTimestamp, that.submitTimestamp) &amp;&amp; Objects.equals(resolveTimestamp, that.resolveTimestamp) &amp;&amp; Objects.equals(description, that.description) &amp;&amp; Objects.equals(receiptUrl, that.receiptUrl) &amp;&amp; Objects.equals(firstName, that.firstName) &amp;&amp; Objects.equals(lastName, that.lastName) &amp;&amp; Objects.equals(email, that.email) &amp;&amp; Objects.equals(type, that.type) &amp;&amp; Objects.equals(status, that.status);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L147">        return Objects.hash(id, amount, submitTimestamp, resolveTimestamp, description, receiptUrl, firstName, lastName, email, resolverId, type, status);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L152">        return &quot;Reimbursement{&quot; +</span>
+                &quot;id=&quot; + id +
+                &quot;, amount=&quot; + amount +
+                &quot;, submitTimestamp='&quot; + submitTimestamp + '\'' +
+                &quot;, resolveTimestamp='&quot; + resolveTimestamp + '\'' +
+                &quot;, description='&quot; + description + '\'' +
+                &quot;, receiptUrl='&quot; + receiptUrl + '\'' +
+                &quot;, firstName='&quot; + firstName + '\'' +
+                &quot;, lastName='&quot; + lastName + '\'' +
+                &quot;, email='&quot; + email + '\'' +
+                &quot;, resolverId=&quot; + resolverId +
+                &quot;, type='&quot; + type + '\'' +
+                &quot;, status='&quot; + status + '\'' +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

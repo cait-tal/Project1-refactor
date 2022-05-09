@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReimbursementDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project-1-employee-reimbursement</a> &gt; <a href="index.source.html" class="el_package">com.revature.dao</a> &gt; <span class="el_source">ReimbursementDao.java</span></div><h1>ReimbursementDao.java</h1><pre class="source lang-java linenums">package com.revature.dao;
+
+import com.revature.dto.AddReimbursementDTO;
+import com.revature.dto.ResponseReimbursementDTO;
+import com.revature.dto.UpdateReimbursementDTO;
+import com.revature.dto.UpdateReimbursementStatusDTO;
+import com.revature.model.*;
+import com.revature.utility.ConnectionUtility;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+<span class="nc" id="L15">public class ReimbursementDao {</span>
+    // With each reimbursement need:
+        // id
+        // amount
+        // type
+        // author -- names from users table
+        // status -- associated with status type table
+        // who resolved -- names from users table
+        // description
+        // image of receipt
+        // type of reimbursement -- associated with reimb type table
+
+
+
+    // TODO 11. deleteReimbursement
+
+
+    // Create
+    public ResponseReimbursementDTO addReimbursement(AddReimbursementDTO addReimbursementDTO, String receiptUrl) throws SQLException {
+<span class="nc" id="L34">        try(Connection con = ConnectionUtility.getConnection()) {</span>
+<span class="nc" id="L35">            con.setAutoCommit(false);</span>
+<span class="nc" id="L36">            String sql = &quot;insert into reimbursements (reimb_amount, reimb_submitted, reimb_description, reimb_receipt, reimb_author, reimb_type_id) &quot; +</span>
+                    &quot;values &quot; +
+                    &quot;(?, ?, ?, ?, ?, ?)&quot;;
+
+<span class="nc" id="L40">            PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);</span>
+
+<span class="nc" id="L42">            pstmt.setDouble(1, addReimbursementDTO.getReimbAmount());//Amount</span>
+<span class="nc" id="L43">            pstmt.setTimestamp(2, addReimbursementDTO.getReimbSubmitted()); //Timestamp</span>
+<span class="nc" id="L44">            pstmt.setString(3, addReimbursementDTO.getReimbDescription()); //Description</span>
+<span class="nc" id="L45">            pstmt.setString(4, receiptUrl); //ReceiptURL</span>
+<span class="nc" id="L46">            pstmt.setInt(5, addReimbursementDTO.getReimbAuthor()); //AuthorID</span>
+<span class="nc" id="L47">            pstmt.setInt(6, addReimbursementDTO.getReimbType()); //TypeID</span>
+
+<span class="nc" id="L49">            pstmt.executeUpdate();</span>
+
+<span class="nc" id="L51">            ResultSet rs = pstmt.getGeneratedKeys();</span>
+
+<span class="nc" id="L53">            rs.next();</span>
+<span class="nc" id="L54">            int reimbId = rs.getInt(1);</span>
+
+<span class="nc" id="L56">            String sqlSelect = &quot;SELECT * &quot; +</span>
+                                &quot;FROM tickets t &quot; +
+                                &quot;WHERE  t.reimb_id = ?&quot;;
+
+<span class="nc" id="L60">            PreparedStatement pstmtSelect = con.prepareStatement(sqlSelect);</span>
+<span class="nc" id="L61">            pstmtSelect.setInt(1, reimbId);</span>
+
+<span class="nc" id="L63">            ResultSet rsNewReimb = pstmtSelect.executeQuery();</span>
+<span class="nc" id="L64">            rsNewReimb.next();</span>
+
+<span class="nc" id="L66">            int id = rsNewReimb.getInt(&quot;reimb_id&quot;);</span>
+<span class="nc" id="L67">            double amount = rsNewReimb.getDouble(&quot;reimb_amount&quot;);</span>
+<span class="nc" id="L68">            String date = new Date(rsNewReimb.getTimestamp(&quot;reimb_submitted&quot;).getTime()).toString();</span>
+<span class="nc" id="L69">            String description = rsNewReimb.getString(&quot;reimb_description&quot;);</span>
+<span class="nc" id="L70">            String firstName = rsNewReimb.getString(&quot;first_name&quot;);</span>
+<span class="nc" id="L71">            String lastName = rsNewReimb.getString(&quot;last_name&quot;);</span>
+<span class="nc" id="L72">            String type = rsNewReimb.getString(&quot;reimb_type&quot;);</span>
+<span class="nc" id="L73">            String status = rsNewReimb.getString(&quot;reimb_status&quot;);</span>
+
+<span class="nc" id="L75">            String urlDetails = &quot;http://130.211.221.169:2000/users/&quot; + addReimbursementDTO.getReimbAuthor() + &quot;/reimbursements/&quot; + id;</span>
+
+
+<span class="nc" id="L78">            ResponseReimbursementDTO reimbursement = new ResponseReimbursementDTO(id, amount, date, description, firstName, lastName, status, type, urlDetails);</span>
+<span class="nc" id="L79">            con.commit();</span>
+<span class="nc" id="L80">            return reimbursement;</span>
+
+        }
+    }
+
+    // R
+    public Reimbursement getReimbursementById(int reimbId) throws SQLException {
+<span class="nc" id="L87">        try (Connection con = ConnectionUtility.getConnection()) {</span>
+<span class="nc" id="L88">            con.setAutoCommit(false);</span>
+<span class="nc" id="L89">            String sql = &quot;SELECT *&quot; +</span>
+                    &quot;FROM tickets t &quot; +
+                    &quot;WHERE t.reimb_id = ?&quot;;
+<span class="nc" id="L92">            PreparedStatement pstmtSelect = con.prepareStatement(sql);</span>
+<span class="nc" id="L93">            pstmtSelect.setInt(1, reimbId);</span>
+
+<span class="nc" id="L95">            ResultSet rs = pstmtSelect.executeQuery();</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">            if (!rs.next())  {</span>
+<span class="nc" id="L97">                return null;</span>
+            }
+
+<span class="nc" id="L100">            int id = rs.getInt(&quot;reimb_id&quot;);</span>
+<span class="nc" id="L101">            double amount = rs.getDouble(&quot;reimb_amount&quot;);</span>
+
+<span class="nc" id="L103">            String submitDateString = new Date(rs.getTimestamp(&quot;reimb_submitted&quot;).getTime()).toString();</span>
+
+<span class="nc" id="L105">            Date resolveDate = rs.getTimestamp(&quot;reimb_resolved&quot;);</span>
+            String resolveDateString;
+<span class="nc bnc" id="L107" title="All 2 branches missed.">            if (resolveDate != null) {</span>
+<span class="nc" id="L108">                resolveDateString = new Date(rs.getTimestamp(&quot;reimb_resolved&quot;).getTime()).toString();</span>
+            } else {
+<span class="nc" id="L110">                resolveDateString = null;</span>
+            }
+<span class="nc" id="L112">            String description = rs.getString(&quot;reimb_description&quot;);</span>
+<span class="nc" id="L113">            String url = rs.getString(&quot;reimb_receipt&quot;);</span>
+<span class="nc" id="L114">            String firstName = rs.getString(&quot;first_name&quot;);</span>
+<span class="nc" id="L115">            String lastName = rs.getString(&quot;last_name&quot;);</span>
+<span class="nc" id="L116">            String email = rs.getString(&quot;user_email&quot;);</span>
+<span class="nc" id="L117">            int resolverId = rs.getInt(&quot;reimb_resolver&quot;);</span>
+<span class="nc" id="L118">            String type = rs.getString(&quot;reimb_type&quot;);</span>
+<span class="nc" id="L119">            String status = rs.getString(&quot;reimb_status&quot;);</span>
+
+
+<span class="nc" id="L122">            Reimbursement reimbursement = new Reimbursement(id, amount, submitDateString, resolveDateString, description, url, firstName, lastName, email, resolverId, type, status);</span>
+<span class="nc" id="L123">            con.commit();</span>
+<span class="nc" id="L124">            return reimbursement;</span>
+        }
+    }
+
+
+    public List&lt;ResponseReimbursementDTO&gt; getReimbursementsByUser(int userId) throws SQLException {
+<span class="nc" id="L130">        try (Connection con = ConnectionUtility.getConnection()){</span>
+<span class="nc" id="L131">            String sql = &quot;SELECT * &quot; +</span>
+                    &quot;FROM employees e &quot; +
+                    &quot;WHERE e.user_id = ?&quot;;
+<span class="nc" id="L134">            PreparedStatement pstmtSelect = con.prepareStatement(sql);</span>
+<span class="nc" id="L135">            pstmtSelect.setInt(1, userId);</span>
+
+<span class="nc" id="L137">            ResultSet rsEmail = pstmtSelect.executeQuery();</span>
+<span class="nc" id="L138">            rsEmail.next();</span>
+
+            // Get user email for second query
+<span class="nc" id="L141">            String email = rsEmail.getString(&quot;user_email&quot;);</span>
+
+
+<span class="nc" id="L144">            String sqlSelect = &quot;SELECT * &quot; +</span>
+                    &quot;FROM tickets t &quot; +
+                    &quot;WHERE t.user_email = ?&quot;;
+<span class="nc" id="L147">            PreparedStatement pstmt = con.prepareStatement(sqlSelect);</span>
+<span class="nc" id="L148">            pstmt.setString(1, email);</span>
+<span class="nc" id="L149">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="nc" id="L151">            List&lt;ResponseReimbursementDTO&gt; reimbursements = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L153" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L154">                int id = rs.getInt(&quot;reimb_id&quot;);</span>
+<span class="nc" id="L155">                double amount = rs.getDouble(&quot;reimb_amount&quot;);</span>
+<span class="nc" id="L156">                String date = new Date(rs.getTimestamp(&quot;reimb_submitted&quot;).getTime()).toString();</span>
+<span class="nc" id="L157">                String description = rs.getString(&quot;reimb_description&quot;);</span>
+<span class="nc" id="L158">                String firstName = rs.getString(&quot;first_name&quot;);</span>
+<span class="nc" id="L159">                String lastName = rs.getString(&quot;last_name&quot;);</span>
+<span class="nc" id="L160">                String type = rs.getString(&quot;reimb_type&quot;);</span>
+<span class="nc" id="L161">                String status = rs.getString(&quot;reimb_status&quot;);</span>
+
+<span class="nc" id="L163">                String urlDetails = &quot;http://130.211.221.169:2000/users/&quot; + userId + &quot;/reimbursements/&quot; + id;</span>
+
+
+<span class="nc" id="L166">                ResponseReimbursementDTO reimbursement = new ResponseReimbursementDTO(id, amount, date, description, firstName, lastName, status, type, urlDetails);</span>
+<span class="nc" id="L167">                reimbursements.add(reimbursement);</span>
+<span class="nc" id="L168">            }</span>
+<span class="nc" id="L169">            return reimbursements;</span>
+            }
+        }
+    public List&lt;ResponseReimbursementDTO&gt; getReimbursementsByUserAndStatus(int userId, String currentStatus) throws SQLException {
+<span class="nc" id="L173">        try (Connection con = ConnectionUtility.getConnection()){</span>
+<span class="nc" id="L174">            String sql = &quot;SELECT * &quot; +</span>
+                    &quot;FROM employees e &quot; +
+                    &quot;WHERE e.user_id = ? &quot;;
+<span class="nc" id="L177">            PreparedStatement pstmtSelect = con.prepareStatement(sql);</span>
+<span class="nc" id="L178">            pstmtSelect.setInt(1, userId);</span>
+
+<span class="nc" id="L180">            ResultSet rsEmail = pstmtSelect.executeQuery();</span>
+<span class="nc" id="L181">            rsEmail.next();</span>
+
+            // Get user email for second query
+<span class="nc" id="L184">            String email = rsEmail.getString(&quot;user_email&quot;);</span>
+
+
+<span class="nc" id="L187">            String sqlSelect = &quot;SELECT * &quot; +</span>
+                    &quot;FROM tickets t &quot; +
+                    &quot;WHERE t.user_email = ? AND t.reimb_status = ?&quot;;
+<span class="nc" id="L190">            PreparedStatement pstmt = con.prepareStatement(sqlSelect);</span>
+<span class="nc" id="L191">            pstmt.setString(1, email);</span>
+<span class="nc" id="L192">            pstmt.setString(2, currentStatus);</span>
+<span class="nc" id="L193">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="nc" id="L195">            List&lt;ResponseReimbursementDTO&gt; reimbursements = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L197" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L198">                int id = rs.getInt(&quot;reimb_id&quot;);</span>
+<span class="nc" id="L199">                double amount = rs.getDouble(&quot;reimb_amount&quot;);</span>
+<span class="nc" id="L200">                String date = new Date(rs.getTimestamp(&quot;reimb_submitted&quot;).getTime()).toString();</span>
+<span class="nc" id="L201">                String description = rs.getString(&quot;reimb_description&quot;);</span>
+<span class="nc" id="L202">                String firstName = rs.getString(&quot;first_name&quot;);</span>
+<span class="nc" id="L203">                String lastName = rs.getString(&quot;last_name&quot;);</span>
+<span class="nc" id="L204">                String type = rs.getString(&quot;reimb_type&quot;);</span>
+<span class="nc" id="L205">                String status = rs.getString(&quot;reimb_status&quot;);</span>
+
+<span class="nc" id="L207">                String urlDetails = &quot;http://130.211.221.169:2000/users/&quot; + userId + &quot;/reimbursements/&quot; + id;</span>
+
+
+<span class="nc" id="L210">                ResponseReimbursementDTO reimbursement = new ResponseReimbursementDTO(id, amount, date,  description, firstName, lastName, status, type, urlDetails);</span>
+<span class="nc" id="L211">                reimbursements.add(reimbursement);</span>
+<span class="nc" id="L212">            }</span>
+<span class="nc" id="L213">            return reimbursements;</span>
+        }
+    }
+    public List&lt;ResponseReimbursementDTO&gt; getReimbursementsByDepartment(String department) throws SQLException {
+<span class="nc" id="L217">        try (Connection con = ConnectionUtility.getConnection()){</span>
+
+<span class="nc" id="L219">            String sqlSelect = &quot;SELECT * &quot; +</span>
+                    &quot;FROM tickets t &quot; +
+                    &quot;WHERE t.user_role = ?&quot;;
+<span class="nc" id="L222">            PreparedStatement pstmt = con.prepareStatement(sqlSelect);</span>
+<span class="nc" id="L223">            pstmt.setString(1, department);</span>
+<span class="nc" id="L224">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="nc" id="L226">            List&lt;ResponseReimbursementDTO&gt; reimbursements = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L228" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L229">                int id = rs.getInt(&quot;reimb_id&quot;);</span>
+<span class="nc" id="L230">                double amount = rs.getDouble(&quot;reimb_amount&quot;);</span>
+<span class="nc" id="L231">                String date = new Date(rs.getTimestamp(&quot;reimb_submitted&quot;).getTime()).toString();</span>
+<span class="nc" id="L232">                String description = rs.getString(&quot;reimb_description&quot;);</span>
+<span class="nc" id="L233">                String firstName = rs.getString(&quot;first_name&quot;);</span>
+<span class="nc" id="L234">                String lastName = rs.getString(&quot;last_name&quot;);</span>
+<span class="nc" id="L235">                String type = rs.getString(&quot;reimb_type&quot;);</span>
+<span class="nc" id="L236">                String status = rs.getString(&quot;reimb_status&quot;);</span>
+<span class="nc" id="L237">                int userId = rs.getInt(&quot;user_id&quot;);</span>
+
+<span class="nc" id="L239">                String urlDetails = &quot;http://130.211.221.169:2000/users/&quot; + userId + &quot;/reimbursements/&quot; + id;</span>
+
+
+<span class="nc" id="L242">                ResponseReimbursementDTO reimbursement = new ResponseReimbursementDTO(id, amount, date, description, firstName, lastName, status, type, urlDetails);</span>
+<span class="nc" id="L243">                reimbursements.add(reimbursement);</span>
+<span class="nc" id="L244">            }</span>
+<span class="nc" id="L245">            return reimbursements;</span>
+        }
+    }
+
+    public List&lt;ResponseReimbursementDTO&gt; getAllReimbursements() throws SQLException {
+<span class="nc" id="L250">        try (Connection con = ConnectionUtility.getConnection()){</span>
+
+
+<span class="nc" id="L253">            String sqlSelect = &quot;SELECT * &quot; +</span>
+                    &quot;FROM tickets t &quot;;
+<span class="nc" id="L255">            PreparedStatement pstmt = con.prepareStatement(sqlSelect);</span>
+
+<span class="nc" id="L257">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="nc" id="L259">            List&lt;ResponseReimbursementDTO&gt; reimbursements = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L261" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L262">                int id = rs.getInt(&quot;reimb_id&quot;);</span>
+<span class="nc" id="L263">                double amount = rs.getDouble(&quot;reimb_amount&quot;);</span>
+<span class="nc" id="L264">                String date = new Date(rs.getTimestamp(&quot;reimb_submitted&quot;).getTime()).toString();</span>
+<span class="nc" id="L265">                String description = rs.getString(&quot;reimb_description&quot;);</span>
+<span class="nc" id="L266">                String firstName = rs.getString(&quot;first_name&quot;);</span>
+<span class="nc" id="L267">                String lastName = rs.getString(&quot;last_name&quot;);</span>
+<span class="nc" id="L268">                String type = rs.getString(&quot;reimb_type&quot;);</span>
+<span class="nc" id="L269">                String status = rs.getString(&quot;reimb_status&quot;);</span>
+
+<span class="nc" id="L271">                int userId = rs.getInt(&quot;user_id&quot;);</span>
+
+<span class="nc" id="L273">                String urlDetails = &quot;http://130.211.221.169:2000/users/&quot; + userId + &quot;/reimbursements/&quot; + id;</span>
+
+
+<span class="nc" id="L276">                ResponseReimbursementDTO reimbursement = new ResponseReimbursementDTO(id, amount, date, description, firstName, lastName, status, type, urlDetails);</span>
+<span class="nc" id="L277">                reimbursements.add(reimbursement);</span>
+<span class="nc" id="L278">            }</span>
+<span class="nc" id="L279">            return reimbursements;</span>
+        }
+    }
+    public List&lt;ResponseReimbursementDTO&gt; getAllReimbursementsByStatus(String status) throws SQLException {
+<span class="nc" id="L283">        try (Connection con = ConnectionUtility.getConnection()){</span>
+
+
+<span class="nc" id="L286">            String sqlSelect = &quot;SELECT * &quot; +</span>
+                    &quot;FROM tickets t &quot; +
+                    &quot;WHERE reimb_status = ?&quot;;
+<span class="nc" id="L289">            PreparedStatement pstmt = con.prepareStatement(sqlSelect);</span>
+
+<span class="nc" id="L291">            pstmt.setString(1, status);</span>
+
+<span class="nc" id="L293">            ResultSet rs = pstmt.executeQuery();</span>
+
+
+<span class="nc" id="L296">            List&lt;ResponseReimbursementDTO&gt; reimbursements = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L298" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L299">                int id = rs.getInt(&quot;reimb_id&quot;);</span>
+<span class="nc" id="L300">                double amount = rs.getDouble(&quot;reimb_amount&quot;);</span>
+<span class="nc" id="L301">                String date = new Date(rs.getTimestamp(&quot;reimb_submitted&quot;).getTime()).toString();</span>
+<span class="nc" id="L302">                String description = rs.getString(&quot;reimb_description&quot;);</span>
+<span class="nc" id="L303">                String firstName = rs.getString(&quot;first_name&quot;);</span>
+<span class="nc" id="L304">                String lastName = rs.getString(&quot;last_name&quot;);</span>
+<span class="nc" id="L305">                String type = rs.getString(&quot;reimb_type&quot;);</span>
+
+<span class="nc" id="L307">                int userId = rs.getInt(&quot;user_id&quot;);</span>
+<span class="nc" id="L308">                String urlDetails = &quot;http://130.211.221.169:2000/users/&quot; + userId + &quot;/reimbursements/&quot; + id;</span>
+
+<span class="nc" id="L310">                ResponseReimbursementDTO reimbursement = new ResponseReimbursementDTO(id, amount, date, description, firstName, lastName, status, type, urlDetails);</span>
+<span class="nc" id="L311">                reimbursements.add(reimbursement);</span>
+<span class="nc" id="L312">            }</span>
+<span class="nc" id="L313">            return reimbursements;</span>
+        }
+    }
+
+    public List&lt;ResponseReimbursementDTO&gt; getAllReimbursementsByStatusAndDepartment(String status, String department) throws SQLException {
+<span class="nc" id="L318">        try (Connection con = ConnectionUtility.getConnection()){</span>
+
+
+<span class="nc" id="L321">            String sqlSelect = &quot;SELECT * &quot; +</span>
+                    &quot;FROM tickets t &quot; +
+                    &quot;WHERE reimb_status = ? AND user_role = ?&quot;;
+<span class="nc" id="L324">            PreparedStatement pstmt = con.prepareStatement(sqlSelect);</span>
+
+<span class="nc" id="L326">            pstmt.setString(1, status);</span>
+<span class="nc" id="L327">            pstmt.setString(2, department);</span>
+
+<span class="nc" id="L329">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="nc" id="L331">            List&lt;ResponseReimbursementDTO&gt; reimbursements = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L333" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L334">                int id = rs.getInt(&quot;reimb_id&quot;);</span>
+<span class="nc" id="L335">                double amount = rs.getDouble(&quot;reimb_amount&quot;);</span>
+<span class="nc" id="L336">                String date = new Date(rs.getTimestamp(&quot;reimb_submitted&quot;).getTime()).toString();</span>
+<span class="nc" id="L337">                String description = rs.getString(&quot;reimb_description&quot;);</span>
+<span class="nc" id="L338">                String firstName = rs.getString(&quot;first_name&quot;);</span>
+<span class="nc" id="L339">                String lastName = rs.getString(&quot;last_name&quot;);</span>
+<span class="nc" id="L340">                String type = rs.getString(&quot;reimb_type&quot;);</span>
+<span class="nc" id="L341">                int userId = rs.getInt(&quot;user_id&quot;);</span>
+<span class="nc" id="L342">                String urlDetails = &quot;http://130.211.221.169:2000/users/&quot; + userId + &quot;/reimbursements/&quot; + id;</span>
+
+
+<span class="nc" id="L345">                ResponseReimbursementDTO reimbursement = new ResponseReimbursementDTO(id, amount, date, description, firstName, lastName, status, type, urlDetails);</span>
+<span class="nc" id="L346">                reimbursements.add(reimbursement);</span>
+<span class="nc" id="L347">            }</span>
+<span class="nc" id="L348">            return reimbursements;</span>
+        }
+    }
+
+    public Reimbursement editUnresolvedReimbursement(int reimbId, UpdateReimbursementDTO reimbursement) throws SQLException {
+<span class="nc" id="L353">        try (Connection con = ConnectionUtility.getConnection()) {</span>
+<span class="nc" id="L354">            con.setAutoCommit(false);</span>
+<span class="nc" id="L355">            String sql = &quot;UPDATE reimbursements r &quot; +</span>
+                    &quot;SET REIMB_AMOUNT=?, REIMB_DESCRIPTION=?, REIMB_RECEIPT=?, REIMB_TYPE_ID=? &quot; +
+                    &quot;WHERE r.reimb_id = ?&quot;;
+<span class="nc" id="L358">            PreparedStatement pstmt = con.prepareStatement(sql);</span>
+<span class="nc" id="L359">            pstmt.setDouble(1, reimbursement.getAmount());</span>
+<span class="nc" id="L360">            pstmt.setString(2, reimbursement.getDescription());</span>
+<span class="nc" id="L361">            pstmt.setString(3, reimbursement.getReceiptUrl());</span>
+<span class="nc" id="L362">            pstmt.setInt(4, reimbursement.getType());</span>
+<span class="nc" id="L363">            pstmt.setInt(5, reimbId);</span>
+
+<span class="nc" id="L365">            pstmt.executeUpdate();</span>
+
+<span class="nc" id="L367">            ReimbursementDao dao = new ReimbursementDao();</span>
+
+<span class="nc" id="L369">            con.commit();</span>
+<span class="nc" id="L370">            return dao.getReimbursementById(reimbId);</span>
+        }
+    }
+    public boolean updateReimbursementStatus(UpdateReimbursementStatusDTO dto, int reimbId) throws SQLException {
+<span class="nc" id="L374">        try (Connection con = ConnectionUtility.getConnection()) {</span>
+<span class="nc" id="L375">            con.setAutoCommit(false);</span>
+<span class="nc" id="L376">            String sql = &quot;UPDATE reimbursements  &quot; +</span>
+                    &quot;SET REIMB_STATUS_ID = ?, REIMB_RESOLVED = ?, REIMB_RESOLVER = ?  &quot; +
+                    &quot;WHERE reimb_id = ?&quot;;
+<span class="nc" id="L379">            PreparedStatement pstmt = con.prepareStatement(sql);</span>
+<span class="nc" id="L380">            pstmt.setInt(1, dto.getStatusId());</span>
+<span class="nc" id="L381">            pstmt.setTimestamp(2, dto.getTimestamp());</span>
+<span class="nc" id="L382">            pstmt.setInt(3, dto.getResolverId());</span>
+<span class="nc" id="L383">            pstmt.setInt(4, reimbId);</span>
+
+<span class="nc bnc" id="L385" title="All 2 branches missed.">            if(pstmt.executeUpdate() == 1) {</span>
+<span class="nc" id="L386">                con.commit();</span>
+<span class="nc" id="L387">                return true;</span>
+            } else {
+<span class="nc" id="L389">                return false;</span>
+            }
+        }
+    }
+
+    public boolean deleteUnresolvedReimbursement(int reimbId) throws SQLException {
+<span class="nc" id="L395">        try (Connection con = ConnectionUtility.getConnection()) {</span>
+<span class="nc" id="L396">            con.setAutoCommit(false);</span>
+<span class="nc" id="L397">            String sql = &quot;DELETE FROM reimbursements r &quot; +</span>
+                    &quot;WHERE r.reimb_id = ?&quot;;
+<span class="nc" id="L399">            PreparedStatement pstmt = con.prepareStatement(sql);</span>
+<span class="nc" id="L400">            pstmt.setInt(1, reimbId);</span>
+
+<span class="nc bnc" id="L402" title="All 2 branches missed.">            if(pstmt.executeUpdate() == 1) {</span>
+<span class="nc" id="L403">                con.commit();</span>
+<span class="nc" id="L404">                return true;</span>
+            } else {
+<span class="nc" id="L406">                return false;</span>
+            }
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

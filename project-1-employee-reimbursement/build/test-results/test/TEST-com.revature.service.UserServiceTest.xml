@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.revature.service.UserServiceTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2022-04-06T18:14:31" hostname="DARTH-CAIT" time="0.012">
+  <properties/>
+  <testcase name="testGetNonExistentUserInfo()" classname="com.revature.service.UserServiceTest" time="0.002"/>
+  <testcase name="testGetAllUsers()" classname="com.revature.service.UserServiceTest" time="0.002"/>
+  <testcase name="testSuccessfulLoginAttempt()" classname="com.revature.service.UserServiceTest" time="0.002"/>
+  <testcase name="testGetAllUsersByInvalidDepartment()" classname="com.revature.service.UserServiceTest" time="0.001"/>
+  <testcase name="testFailedLoginAttempt()" classname="com.revature.service.UserServiceTest" time="0.002"/>
+  <testcase name="testGetUserInfoInvalidUserId()" classname="com.revature.service.UserServiceTest" time="0.001"/>
+  <testcase name="testGetValidUserInfo()" classname="com.revature.service.UserServiceTest" time="0.001"/>
+  <testcase name="testGetAllUsersByDepartment()" classname="com.revature.service.UserServiceTest" time="0.001"/>
+  <system-out><![CDATA[06 04 2022 - 12:14:31.010 [Test worker] INFO  com.revature.service.UserService - Successful login.
+Username: admin
+06 04 2022 - 12:14:31.013 [Test worker] WARN  com.revature.service.UserService - Failed login attempt.
+Username: admin
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
