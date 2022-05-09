@@ -1,0 +1,81 @@
+HELP.md
+reimbursement/.gradle
+reimbursement/build/
+reimbursement/!gradle/wrapper/gradle-wrapper.jar
+reimbursement/!**/src/main/**/build/
+reimbursement/!**/src/test/**/build/
+
+### STS ###
+reimbursement/.apt_generated
+reimbursement/.classpath
+reimbursement/.factorypath
+reimbursement/.project
+reimbursement/.settings
+reimbursement/.springBeans
+reimbursement/.sts4-cache
+reimbursement/bin/
+reimbursement/!**/src/main/**/bin/
+reimbursement/!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+reimbursement/.idea
+reimbursement/*.iws
+reimbursement/*.iml
+reimbursement/*.ipr
+reimbursement/out/
+reimbursement/!**/src/main/**/out/
+reimbursement/!**/src/test/**/out/
+
+### NetBeans ###
+reimbursement//nbproject/private/
+reimbursement//nbbuild/
+reimbursement//dist/
+reimbursement//nbdist/
+reimbursement//.nb-gradle/
+
+### VS Code ###
+ui-angular/.vscode/
+
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+ui-angular//dist
+ui-angular//tmp
+ui-angular//out-tsc
+ui-angular//bazel-out
+
+# Node
+ui-angular/node_modules
+ui-angular/npm-debug.log
+ui-angular/yarn-error.log
+
+# IDEs and editors
+ui-angular/.idea/
+ui-angular/.project
+ui-angular/.classpath
+ui-angular/.c9/
+ui-angular/*.launch
+ui-angular/.settings/
+ui-angular/*.sublime-workspace
+
+# Visual Studio Code
+ui-angular/.vscode/*
+ui-angular/!.vscode/settings.json
+ui-angular/!.vscode/tasks.json
+ui-angular/!.vscode/launch.json
+ui-angular/!.vscode/extensions.json
+ui-angular/.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+libpeerconnection.log
+testem.log
+/typings
+
+# System files
+.DS_Store
+Thumbs.db
+
