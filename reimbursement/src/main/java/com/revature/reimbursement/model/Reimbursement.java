@@ -1,7 +1,6 @@
 package com.revature.reimbursement.model;
 
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -12,7 +11,7 @@ import java.sql.Timestamp;
 public class Reimbursement {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name="reimb_amount")
@@ -30,20 +29,19 @@ public class Reimbursement {
     @Column(name="reimb_receipt")
     private String receiptUrl;
 
-    @JoinColumn(name="reimb_author_id")
     @ManyToOne
+    @JoinColumn(name="reimb_author_id")
     private User author;
 
-    @JoinColumn(name="reimb_resolver_id")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="reimb_resolver_id", referencedColumnName = "id")
     private User resolver;
 
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="reimb_status_id")
-    @ColumnDefault("202")
-    @ManyToOne
     private ReimbursementStatus status;
 
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="reimb_type_id")
-    @ManyToOne
     private ReimbursementType type;
 }

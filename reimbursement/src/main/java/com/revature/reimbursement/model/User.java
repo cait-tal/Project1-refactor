@@ -14,23 +14,23 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name="username")
+    @Column(name="username", nullable = false)
     private String username;
 
-    @Column(name="password")
+    @Column(name="password", nullable = false)
     private String password;
 
-    @Column(name="first_name")
+    @Column(name="first_name", nullable = false)
     private String firstName;
 
-    @Column(name="last_name")
+    @Column(name="last_name", nullable = false)
     private String lastName;
 
-    @Column(name="email")
+    @Column(name="email", nullable = false)
     private String email;
 
-    @JoinColumn(name="user_role_id")
     @ManyToOne
+    @JoinColumn(name="user_role_id", referencedColumnName = "id", nullable = false)
     private UserRole userRole;
 
     @Override
