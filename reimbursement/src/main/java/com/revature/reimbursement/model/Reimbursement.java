@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Entity
 @Table(name="reimbursements")
@@ -15,7 +16,7 @@ public class Reimbursement {
     private int id;
 
     @Column(name="reimb_amount")
-    private Long amount;
+    private Double amount;
 
     @Column(name="reimb_submitted")
     private Timestamp submitDate;
@@ -44,4 +45,33 @@ public class Reimbursement {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="reimb_type_id")
     private ReimbursementType type;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reimbursement that = (Reimbursement) o;
+        return id == that.id && Objects.equals(amount, that.amount) && Objects.equals(submitDate, that.submitDate) && Objects.equals(resolveDate, that.resolveDate) && Objects.equals(description, that.description) && Objects.equals(receiptUrl, that.receiptUrl) && Objects.equals(author, that.author) && Objects.equals(resolver, that.resolver) && Objects.equals(status, that.status) && Objects.equals(type, that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, amount, submitDate, resolveDate, description, receiptUrl, author, resolver, status, type);
+    }
+
+    @Override
+    public String toString() {
+        return "Reimbursement{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", submitDate=" + submitDate +
+                ", resolveDate=" + resolveDate +
+                ", description='" + description + '\'' +
+                ", receiptUrl='" + receiptUrl + '\'' +
+                ", author=" + author +
+                ", resolver=" + resolver +
+                ", status=" + status +
+                ", type=" + type +
+                '}';
+    }
 }
