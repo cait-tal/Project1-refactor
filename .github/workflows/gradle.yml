@@ -46,9 +46,7 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
     - name: change wrapper permissions
-      run:
-        cd reimbursement
-        chmod +x ./gradlew
+      run: chmod +x ./gradlew
       working-directory: ./reimbursement
     - name: Build with Gradle
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
