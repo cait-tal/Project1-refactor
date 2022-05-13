@@ -9,5 +9,9 @@ import java.util.List;
 @Repository
 public interface ReimbursementRepository extends JpaRepository<Reimbursement, Integer> {
 
-    List<Reimbursement> findByUserFirstNameAndLastName(String firstName, String lastName);
+    List<Reimbursement> findByAuthorId(int id);
+
+    List<Reimbursement> findByStatusId(int id);
+
+    List<Reimbursement> findByTypeId(int id);
 }
