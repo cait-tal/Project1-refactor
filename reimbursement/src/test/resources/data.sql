@@ -30,11 +30,11 @@ values
 
 insert into reimbursements  (reimb_amount, reimb_submitted, reimb_description, reimb_receipt, reimb_author_id, reimb_type_id, reimb_status_id)
 VALUES
-(1007.67, null, 'Sales training bootcamp','https://storage.googleapis.com/reimb-receipt-images/sample_receipt_1.png', 1, 4, 1),
-(567.43, null, 'Company Dinner','https://storage.googleapis.com/reimb-receipt-images/sample_receipt_2.png',2, 3, 1),
-(113.56, null, 'Car rental','https://storage.googleapis.com/reimb-receipt-images/sample_receipt_1.png',3, 2, 1);
+(1007.67, '2022-05-12 15:18:20.693', 'Sales training bootcamp','https://storage.googleapis.com/reimb-receipt-images/sample_receipt_1.png', 1, 4, 2),
+(567.43, null, 'Company Dinner','https://storage.googleapis.com/reimb-receipt-images/sample_receipt_2.png',2, 3, 2),
+(113.56, null, 'Car rental','https://storage.googleapis.com/reimb-receipt-images/sample_receipt_1.png',3, 2, 2);
 
 
 insert into reimbursements (reimb_amount, reimb_submitted, reimb_resolved,  reimb_description, reimb_receipt, reimb_author_id, reimb_resolver_id, reimb_status_id, reimb_type_id)
 VALUES
-(113.56, null, null, 'Car rental','https://storage.googleapis.com/reimb-receipt-images/sample_receipt_1.png',2, 1, 2, 3);
+(113.56, null, null, 'Car rental','https://storage.googleapis.com/reimb-receipt-images/sample_receipt_1.png',2, 1, 3, 3);

@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name="reimbursements")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor  @RequiredArgsConstructor
 public class Reimbursement {
 
     @Id
@@ -16,22 +16,27 @@ public class Reimbursement {
     private int id;
 
     @Column(name="reimb_amount")
+    @NonNull
     private Double amount;
 
     @Column(name="reimb_submitted")
+    @NonNull
     private Timestamp submitDate;
 
     @Column(name="reimb_resolved")
     private Timestamp resolveDate;
 
     @Column(name="reimb_description")
+    @NonNull
     private String description;
 
     @Column(name="reimb_receipt")
+    @NonNull
     private String receiptUrl;
 
     @ManyToOne
     @JoinColumn(name="reimb_author_id")
+    @NonNull
     private User author;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -40,10 +45,12 @@ public class Reimbursement {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="reimb_status_id")
+    @NonNull
     private ReimbursementStatus status;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="reimb_type_id")
+    @NonNull
     private ReimbursementType type;
 
     @Override
