@@ -36,13 +36,13 @@ jobs:
     - name: Cache SonarCloud packages
       uses: actions/cache@v1
       with:
-        path: ~/reimbursement/.sonar/cache
+        path: ~/.sonar/cache
         key: ${{ runner.os }}-sonar
         restore-keys: ${{ runner.os }}-sonar
     - name: Cache Gradle packages
       uses: actions/cache@v1
       with:
-        path: ~/reimbursement/.gradle/caches
+        path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
     - name: change wrapper permissions
@@ -53,9 +53,3 @@ jobs:
       with:
         arguments: build --info
         build-root-directory: reimbursement
-    - name: Analyze
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./gradlew sonarqube --info
-      working-directory: ./reimbursement
