@@ -53,9 +53,3 @@ jobs:
       with:
         arguments: build --info
         build-root-directory: reimbursement
-    - name: Analyze
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./gradlew sonarqube --info
-      working-directory: ./reimbursement
