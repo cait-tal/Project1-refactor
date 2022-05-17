@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ReimbursementDaoTests {
+class ReimbursementDaoTests {
 
     private Timestamp submit;
     private Timestamp resolved;
@@ -54,7 +54,7 @@ public class ReimbursementDaoTests {
     void test_findAllReimbursements_positive() {
         List<Reimbursement> reimbursements = reimbRepo.findAll();
 
-        assertThat(reimbursements.size()).isEqualTo(4);
+        assertThat(reimbursements).hasSize(4);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ReimbursementDaoTests {
 
         Reimbursement actual = optional.get();
 
-        assertThat(optional.isPresent()).isTrue();
+        assertThat(optional).isPresent();
         assertThat(actual).isEqualTo(reimbursement);
     }
 
@@ -71,14 +71,14 @@ public class ReimbursementDaoTests {
     void test_findByReimbursementById_negative() {
         Optional<Reimbursement> optional = reimbRepo.findById(500);
 
-        assertThat(optional.isPresent()).isFalse();
+        assertThat(optional).isNotPresent();
     }
 
     @Test
     void test_findReimbursementByAuthorId_positive() {
         List<Reimbursement> actual = reimbRepo.findByAuthorId(1);
 
-        assertThat(actual.size()).isEqualTo(1);
+        assertThat(actual).hasSize(1);
         assertThat(actual.get(0)).isEqualTo(reimbursement);
     }
 
@@ -86,7 +86,7 @@ public class ReimbursementDaoTests {
     void test_findReimbursementByAuthorId_negative() {
         List<Reimbursement> actual = reimbRepo.findByAuthorId(500);
 
-        assertThat(actual.size()).isEqualTo(0);
+        assertThat(actual).isEmpty();
         assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(()-> {
             actual.get(0);
         });
@@ -96,13 +96,13 @@ public class ReimbursementDaoTests {
     void test_findReimbursementByTypeId_positive() {
         List<Reimbursement> actual = reimbRepo.findByTypeId(3);
 
-        assertThat(actual.size()).isEqualTo(2);
+        assertThat(actual).hasSize(2);
         assertThat(actual.get(0)).isNotEqualTo(reimbursement);
         assertThat(actual.get(1)).isNotEqualTo(reimbursement);
 
         List<Reimbursement> actual2 = reimbRepo.findByTypeId(4);
 
-        assertThat(actual2.size()).isEqualTo(1);
+        assertThat(actual2).hasSize(1);
         assertThat(actual2.get(0)).isEqualTo(reimbursement);
     }
 
@@ -110,7 +110,7 @@ public class ReimbursementDaoTests {
     void test_findReimbursementByTypeId_negative() {
         List<Reimbursement> actual = reimbRepo.findByTypeId(500);
 
-        assertThat(actual.size()).isEqualTo(0);
+        assertThat(actual).isEmpty();
         assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(()-> {
             actual.get(0);
         });
@@ -120,7 +120,7 @@ public class ReimbursementDaoTests {
     void test_findByReimbursementStatusIdPending_positive() {
         List<Reimbursement> actual = reimbRepo.findByStatusId(2);
 
-        assertThat(actual.size()).isEqualTo(3);
+        assertThat(actual).hasSize(3);
         assertThat(actual.get(0)).isEqualTo(reimbursement);
     }
 
@@ -128,7 +128,7 @@ public class ReimbursementDaoTests {
     void test_findByReimbursementStatusIdRejected_positive() {
         List<Reimbursement> actual = reimbRepo.findByStatusId(3);
 
-        assertThat(actual.size()).isEqualTo(1);
+        assertThat(actual).hasSize(1);
         assertThat(actual.get(0)).isNotEqualTo(reimbursement);
     }
 
@@ -136,7 +136,7 @@ public class ReimbursementDaoTests {
     void test_findByReimbursementStatusId_negative() {
         List<Reimbursement> actual = reimbRepo.findByStatusId(500);
 
-        assertThat(actual.size()).isEqualTo(0);
+        assertThat(actual).isEmpty();
         assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(()-> {
             actual.get(0);
         });

@@ -9,12 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class UserDaoTests {
+class UserDaoTests {
 
     @Autowired
     private UserRepository userRepo;
@@ -26,7 +26,7 @@ public class UserDaoTests {
             System.out.println(user);
         }
 
-        assertThat(users.size()).isEqualTo(3);
+        assertThat(users).hasSize(3);
     }
 
     @Test
@@ -36,13 +36,13 @@ public class UserDaoTests {
         UserRole expectedRole = new UserRole(2, "Finance");
 
         User expected = new User(1, "CatMom1", "ilovemycats!", "Angela", "Martin", "angela_martin1@dundermifflen.net", expectedRole);
-
-        assertThat(actual.get()).isEqualTo(expected);
-        assertThat(actual.isPresent()).isTrue();
+        User userActual = actual.get();
+        assertThat(userActual).isEqualTo(expected);
+        assertThat(actual).isPresent();
     }
 
     @Test
     void test_findByInvalidUsernameAndPasswordNegative() {
-        assertThat(userRepo.findByUsernameAndPassword("CatMom1", "badPassword").isPresent()).isFalse();
+        assertThat(userRepo.findByUsernameAndPassword("CatMom1", "badPassword")).isNotPresent();
     }
 }
