@@ -64,7 +64,7 @@ jacocoTestReport {
 sonarqube {
 	properties {
 		property "sonar.projectKey", "cait-tal_Project1-refactor"
-		property "sonar.organization", "revature-reimbursement"
+		property "sonar.organization", "cait-tal"
 		property "sonar.host.url", "https://sonarcloud.io"
 		property "sonar.coverage.exclusions", "**/com/revature/reimbursement/model/*, " +
 				"**/com/revature/reimbursement/exception/*," +
